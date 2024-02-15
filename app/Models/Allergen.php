@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Allergen extends Model
-{
+class Allergen extends Model {
     use HasFactory;
+
+
+    public static function findByItem($itemId) {
+        DB::table('item_allergen')
+            ->where('item_id', $itemId)
+            ->get();
+    }
 }
