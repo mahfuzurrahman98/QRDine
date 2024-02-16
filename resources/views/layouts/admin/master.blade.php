@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description"
-        content="">
+    <meta name="description" content="">
     <meta name="author" content="Themesberg">
     <meta name="generator" content="Hugo 0.58.2">
     <title>Restaurant Tableside Ordering</title>
