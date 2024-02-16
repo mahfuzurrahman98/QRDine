@@ -15,15 +15,27 @@
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-800">
-    @include('layouts.admin.navbar')
-    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
-        @include('layouts.admin.sidebar')
-        <div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
-        <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-            @yield('main')
+    <div class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+        @include('layouts.admin.navbar')
+        <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+            @include('layouts.admin.sidebar')
+            <div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
+            <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+                <main>
+                    <div class="px-4 pt-6">
+                        <x-alert type='error'>
+                            This is an error alert
+                        </x-alert>
+                        <x-alert type='success'>
+                            This is a success alert
+                        </x-alert>
+                        @yield('main')
+                    </div>
+                </main>
 
-            @include('layouts.admin.footer')
+            </div>
         </div>
+        @include('layouts.admin.footer')
     </div>
 </body>
 
