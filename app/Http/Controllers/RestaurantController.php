@@ -38,14 +38,14 @@ class RestaurantController extends Controller {
      * Show the form for editing the specified resource.
      */
     public function edit(Restaurant $restaurant) {
-        //
+        return view('restaurants.edit', ['restaurant' => $restaurant]);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Restaurant $restaurant) {
-        //
+        dd($request->all());
     }
 
     /**
