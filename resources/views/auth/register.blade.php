@@ -59,6 +59,7 @@
                             Restaurant Name
                         </label>
                         <input type="text" name="name" id="name" oninput="generateSlug()"
+                            value="{{ old('name') }}"
                             class="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
                             placeholder="Enter restaurant name" required>
                     </div>
@@ -66,7 +67,7 @@
                         <label for="slug" class="block mb-2 text-sm font-medium text-white">
                             Slug
                         </label>
-                        <input type="text" name="slug" id="slug"
+                        <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
                             class="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
                             placeholder="Enter an unique slug" required>
                     </div>
@@ -74,7 +75,7 @@
                         <label for="email" class="block mb-2 text-sm font-medium text-white">
                             Email
                         </label>
-                        <input type="email" name="email" id="email"
+                        <input type="email" name="email" id="email" value="{{ old('email') }}"
                             class="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white"
                             placeholder="name@company.com" required>
                     </div>
@@ -112,6 +113,14 @@
                 .replace(/[^a-zA-Z0-9- ]/g, "");
             document.getElementById("slug").value = URL;
         }
+
+        const form = document.querySelector('form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        form.addEventListener('submit', function(event) {
+            submitButton.disabled = true;
+            submitButton.classList.add('cursor-not-allowed', 'opacity-50');
+            submitButton.innerHTML = 'Processing...';
+        });
     </script>
 </body>
 

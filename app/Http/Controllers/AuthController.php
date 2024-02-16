@@ -52,21 +52,28 @@ class AuthController extends Controller {
             $errors = $validator->errors();
 
             // cahtch teh first key of the errors and return it as the message
-            return redirect()->back()->withError($errors->first());
+            // also redirect with the old input
+            return redirect()
+                ->back()
+                ->withError($errors->first())
+                ->withInput();
         }
 
         try {
-            DB::startTransaction();
+            DB::beginTransaction();
 
-            Restaurant::create([
+            $user = User::create([
                 'name' => $request->name,
-                'slug' => $request->slug
-            ]);
-
-            User::create([
                 'email' => $request->email,
                 'password' => bcrypt($request->password)
             ]);
+
+            Restaurant::create([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'user_id' => $user->id
+            ]);
+
 
             DB::commit();
 
@@ -79,7 +86,9 @@ class AuthController extends Controller {
             if (auth()->attempt($credentials)) {
                 $request->session()->regenerate();
 
-                return redirect()->intended('/dashboard');
+                return redirect()
+                    ->intended('/dashboard')
+                    ->withSuccess('Restaurant created successfully');
             }
         } catch (\Exception $e) {
             DB::rollback();
