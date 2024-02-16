@@ -26,14 +26,15 @@ Route::get('/', function () {
 });
 
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
 
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'store']);
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/register', [AuthController::class, 'store']);
 
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 Route::get('/resto/{slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
