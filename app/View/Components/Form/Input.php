@@ -15,9 +15,9 @@ class Input extends Component {
     public string $placeholder;
     public bool $required;
     public bool $disabled;
-    public float $min;
-    public float $max;
-    public float $step;
+    public ?float $min;
+    public ?float $max;
+    public ?float $step;
     /**
      * Create a new component instance.
      */
@@ -30,9 +30,9 @@ class Input extends Component {
         string $placeholder,
         bool $required,
         bool $disabled = false,
-        float $min = null,
-        float $max = null,
-        float $step = null
+        ?float $min = null,
+        ?float $max = null,
+        ?float $step = null
     ) {
         $this->label = $label;
         $this->type = $type;
@@ -51,6 +51,6 @@ class Input extends Component {
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string {
-        return view('components.form.input-text');
+        return view('components.form.input');
     }
 }
