@@ -24,21 +24,18 @@ use App\Http\Controllers\DineinTableController;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/resto/{slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
 
     Route::get('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/register', [AuthController::class, 'store']);
-
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/restaurants/store', [AuthController::class, 'store'])->name('restaurants.store');
 });
 
-Route::get('/resto/{slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
-
 Route::group(['middleware' => 'auth'], function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
     // restaurants
@@ -65,7 +62,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/items', [ItemController::class, 'store'])->name('items.store');
     Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
     Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
-    Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
 
     // item allergens
@@ -80,4 +76,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+
+    // cart
+    Route::get('/cart', [OrderController::class, 'cart'])->name('cart');
+    Route::post('/cart', [OrderController::class, 'addToCart'])->name('cart.store');
+    Route::put('/cart/{item}', [OrderController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/{item}', [OrderController::class, 'removeFromCart'])->name('cart.destroy');
 });
