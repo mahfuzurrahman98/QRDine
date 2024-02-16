@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class InputText extends Component {
+class Input extends Component {
     public string $label;
     public string $type;
     public string $name;
@@ -15,6 +15,9 @@ class InputText extends Component {
     public string $placeholder;
     public bool $required;
     public bool $disabled;
+    public float $min;
+    public float $max;
+    public float $step;
     /**
      * Create a new component instance.
      */
@@ -26,7 +29,10 @@ class InputText extends Component {
         string $value,
         string $placeholder,
         bool $required,
-        bool $disabled = false
+        bool $disabled = false,
+        float $min = null,
+        float $max = null,
+        float $step = null
     ) {
         $this->label = $label;
         $this->type = $type;
@@ -36,6 +42,9 @@ class InputText extends Component {
         $this->placeholder = $placeholder;
         $this->required = $required;
         $this->disabled = $disabled;
+        $this->min = $min;
+        $this->max = $max;
+        $this->step = $step;
     }
 
     /**
