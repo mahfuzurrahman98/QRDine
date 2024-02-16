@@ -10,7 +10,6 @@ class InputCheckbox extends Component {
     public string $name;
     public string $id;
     public string $checked;
-    public bool $required;
     public string $label;
 
     /**
@@ -26,7 +25,6 @@ class InputCheckbox extends Component {
         $this->name = $name;
         $this->id = $id;
         $this->checked = $checked;
-        $this->required = $required;
         $this->label = $label;
     }
 
