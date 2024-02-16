@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Restaurant extends Model {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'description', 'address', 'phone', 'logo', 'cover', 'enable_ordering', 'stripe_id', 'user_id'];
+    protected $fillable = [
+        'name', 'slug',
+        'description', 'address',
+        'phone', 'logo', 'cover',
+        'enable_ordering', 'enable_wa_notification',
+        'minimum_order_amount', 'active',
+        'stripe_id', 'user_id'
+    ];
 
     // define accessors
     public function getLogoAttribute($value) {
