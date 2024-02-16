@@ -1,5 +1,5 @@
 <div>
-    <label for="name" class="block mb-2 text-sm font-medium text-white">
+    <label for="{{ $id }}" class="block mb-2 text-sm font-medium text-white">
         {{ $label }}
     </label>
     <textarea name="{{ $name }}" id="{{ $id }}"
