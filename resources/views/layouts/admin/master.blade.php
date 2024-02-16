@@ -10,8 +10,9 @@
     <title>Restaurant Tableside Ordering</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="apple-touch-icon" sizes="180x180" href="">
-
     <meta name="theme-color" content="#ffffff">
+
+    @stack('styles')
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-800">
@@ -40,6 +41,8 @@
             </div>
         </div>
         @include('layouts.admin.footer')
+
+        @stack('scripts')
     </div>
 </body>
 
