@@ -23,12 +23,16 @@
             <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
                 <main>
                     <div class="px-4 pt-6">
-                        <x-alert type='error'>
-                            This is an error alert
-                        </x-alert>
-                        <x-alert type='success'>
-                            This is a success alert
-                        </x-alert>
+                        @if (session('status'))
+                            <x-alert type='success'>
+                                This is a success alert
+                            </x-alert>
+                        @endif
+                        @if (session('error'))
+                            <x-alert type='error'>
+                                This is an error alert
+                            </x-alert>
+                        @endif
                         @yield('main')
                     </div>
                 </main>
