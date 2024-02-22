@@ -11,7 +11,7 @@ class Input extends Component {
     public string $type;
     public string $name;
     public string $id;
-    public string $value;
+    public ?string $value;
     public string $placeholder;
     public bool $required;
     public bool $disabled;
@@ -26,10 +26,10 @@ class Input extends Component {
         string $type,
         string $name,
         string $id,
-        string $value,
         string $placeholder,
-        bool $required,
-        bool $disabled = false,
+        ?string $value = null,
+        ?bool $required = false,
+        ?bool $disabled = false,
         ?float $min = null,
         ?float $max = null,
         ?float $step = null
@@ -38,8 +38,8 @@ class Input extends Component {
         $this->type = $type;
         $this->name = $name;
         $this->id = $id;
-        $this->value = $value;
         $this->placeholder = $placeholder;
+        $this->value = $value;
         $this->required = $required;
         $this->disabled = $disabled;
         $this->min = $min;
