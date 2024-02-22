@@ -24,6 +24,8 @@ class AuthController extends Controller {
         if (auth()->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
+            session()->flash('status', 'Welcome, You are logged in!');
+
             return redirect()->intended('/dashboard');
         }
 
@@ -86,6 +88,8 @@ class AuthController extends Controller {
             if (auth()->attempt($credentials)) {
                 $request->session()->regenerate();
 
+                session()->flash('status', 'Welcome to QRDine, Setup your restaurant to get started!');
+
                 return redirect()
                     ->intended('/dashboard')
                     ->withSuccess('Restaurant created successfully');
@@ -94,6 +98,18 @@ class AuthController extends Controller {
             DB::rollback();
             return redirect()->back()->withError($e->getMessage());
         }
+    }
+
+    public function loginAsRestaurant(Restaurant $restaurant) {
+        // keep track of current user
+        // And login as the restaurant user
+
+        session()->put('original_user', auth()->user());
+
+        auth()->login($restaurant->user);
+        session()->flash('status', 'You are now logged in as ' . $restaurant->name);
+
+        return redirect()->route('dashboard');
     }
 
     public function logout() {

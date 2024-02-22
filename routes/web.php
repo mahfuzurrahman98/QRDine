@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/restaurants/{restaurant}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
     Route::put('/restaurants/{restaurant}', [RestaurantController::class, 'update'])->name('restaurants.update');
     Route::delete('/restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
+    Route::post('/login-as-resto/{restaurant}', [AuthController::class, 'loginAsRestaurant'])->name('restaurants.login_as');
 
     // dinein tables
     Route::get('/dinein-tables', [DineinTableController::class, 'index'])->name('dinein-tables');
