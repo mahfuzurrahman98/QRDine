@@ -10,6 +10,7 @@ class Button extends Component {
     public string $type;
     public string $id;
     public string $usage;
+    public string $size;
     public string $href;
     /**
      * Create a new component instance.
@@ -18,11 +19,13 @@ class Button extends Component {
         string $type,
         string $id,
         string $usage,
+        ?string $size = 'normal',
         string $href = ''
     ) {
         $this->type = $type;
         $this->id = $id;
         $this->usage = $usage;
+        $this->size = $size;
         $this->href = $href;
     }
 
