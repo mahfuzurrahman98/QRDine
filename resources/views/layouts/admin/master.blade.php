@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="">
     <meta name="theme-color" content="#ffffff">
 
+    <link rel="stylesheet" href="izitoast/css/iziToast.min.css">
     @stack('styles')
 </head>
 
@@ -26,12 +27,12 @@
                     <div class="px-4 pt-6">
                         @if (session('status'))
                             <x-alert type='success'>
-                                This is a success alert
+                                {{ session('status') }}
                             </x-alert>
                         @endif
                         @if (session('error'))
                             <x-alert type='error'>
-                                This is an error alert
+                                {{ session('error') }}
                             </x-alert>
                         @endif
                         @yield('main')
@@ -42,6 +43,7 @@
         </div>
         @include('layouts.admin.footer')
 
+        <script src="izitoast/js/iziToast.min.js"></script>
         @stack('scripts')
     </div>
 </body>
