@@ -1,7 +1,7 @@
 @php
     $valueAttr = '';
     if ($value) {
-        $valueAttr = 'value=' . '"' . $value . '"';
+        $valueAttr = 'value=' . $value;
     }
 @endphp
 
