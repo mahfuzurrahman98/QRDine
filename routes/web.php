@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\DineinTableController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,49 +39,50 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-    // restaurants
-    Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants');
-    Route::get('/restaurants/{restaurant}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
-    Route::put('/restaurants/{restaurant}', [RestaurantController::class, 'update'])->name('restaurants.update');
-    Route::delete('/restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
-    Route::post('/login-as-resto/{restaurant}', [AuthController::class, 'loginAsRestaurant'])->name('restaurants.login_as');
+    Route::middleware(['is-admin'])->group(function () {
+        // restaurants
+        Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants');
+        Route::delete('/restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
+        Route::post('/login-as-resto/{restaurant}', [AuthController::class, 'loginAsRestaurant'])->name('restaurants.login_as');
+    });
 
-    // dinein tables
-    Route::get('/dinein-tables', [DineinTableController::class, 'index'])->name('dinein-tables');
-    Route::post('/dinein-tables', [DineinTableController::class, 'store'])->name('dinein-tables.store');
-    Route::get('/dinein-tables/{dineinTable}/edit', [DineinTableController::class, 'edit'])->name('dinein-tables.edit');
-    Route::put('/dinein-tables/{dineinTable}', [DineinTableController::class, 'update'])->name('dinein-tables.update');
-    Route::delete('/dinein-tables/{dineinTable}', [DineinTableController::class, 'destroy'])->name('dinein-tables.destroy');
+    Route::middleware(['is-resto'])->group(function () {
+        // restaurant
+        Route::get('/restaurants/{restaurant}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
+        Route::put('/restaurants/{restaurant}', [RestaurantController::class, 'update'])->name('restaurants.update');
 
-    // categories
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        // dinein tables
+        Route::get('/dinein-tables', [DineinTableController::class, 'index'])->name('dinein-tables');
+        Route::post('/dinein-tables', [DineinTableController::class, 'store'])->name('dinein-tables.store');
+        Route::get('/dinein-tables/{dineinTable}/edit', [DineinTableController::class, 'edit'])->name('dinein-tables.edit');
+        Route::put('/dinein-tables/{dineinTable}', [DineinTableController::class, 'update'])->name('dinein-tables.update');
+        Route::delete('/dinein-tables/{dineinTable}', [DineinTableController::class, 'destroy'])->name('dinein-tables.destroy');
 
-    // items
-    Route::get('/items', [ItemController::class, 'index'])->name('items');
-    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-    Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
-    Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
-    Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+        // categories
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // item allergens
-    Route::get('allergens', [AllergenController::class, 'allergens'])->name('allergens');
-    Route::post('allergens', [AllergenController::class, 'storeAllergens'])->name('allergens.store');
-    Route::put('allergens/{allergen}', [AllergenController::class, 'updateAllergens'])->name('allergens.update');
-    Route::delete('allergens/{allergen}', [AllergenController::class, 'destroyAllergens'])->name('allergens.destroy');
+        // items
+        Route::get('/items', [ItemController::class, 'index'])->name('items');
+        Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+        Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+        Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+        Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
 
-    // orders
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
-    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
-    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+        // orders
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+        Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    });
 
-    // cart
+    // cart and checkout
     Route::get('/cart', [OrderController::class, 'cart'])->name('cart');
     Route::post('/cart', [OrderController::class, 'addToCart'])->name('cart.store');
     Route::put('/cart/{item}', [OrderController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{item}', [OrderController::class, 'removeFromCart'])->name('cart.destroy');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 });
