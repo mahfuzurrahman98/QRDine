@@ -22,3 +22,13 @@ document.getElementById("theme-toggle").addEventListener("click", function () {
         localStorage.setItem("color-theme", "dark");
     }
 });
+
+// if any form is submitted, disable the submit button and show the spinner
+document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", (e) => {
+        form.querySelector("button[type=submit]").setAttribute(
+            "disabled",
+            true
+        );
+    });
+});
