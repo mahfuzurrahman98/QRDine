@@ -11,8 +11,16 @@ class Item extends Model {
     protected $fillable = ['name', 'description', 'price', 'image', 'active', 'category_id'];
 
     // define accessors
-    public function getImageAttribute($value) {
-        return $value ? asset('storage/' . $value) : null;
+    public function getLogoAttribute() {
+        return $this->image == '' ? '' : asset("uploads/restaurants/{$this->category->restaurant->slug}/items/{$this->image}_small.jpg");
+    }
+
+    public function getCoverAttribute() {
+        return $this->image == '' ? '' : asset("uploads/restaurants/{$this->category->restaurant->slug}/items/{$this->image}_large.jpg");
+    }
+
+    public function getOriginalImageAttribute() {
+        return $this->image == '' ? '' : asset("uploads/restaurants/{$this->category->restaurant->slug}/items/{$this->image}_original.jpg");
     }
 
     // define relationships
