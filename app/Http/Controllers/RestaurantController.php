@@ -10,7 +10,10 @@ class RestaurantController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        //
+        // paginate the restaurants
+        $restaurants = Restaurant::paginate(10);
+
+        return view('restaurants.index', ['restaurants' => $restaurants]);
     }
 
     /**
