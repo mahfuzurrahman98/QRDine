@@ -33,8 +33,12 @@ class RestaurantController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Restaurant $restaurant) {
-        //
+    public function show(Request $request, string $slug) {
+        $restaurant = Restaurant::where('slug', $slug)->first();
+        if (!$restaurant) {
+            abort(404);
+        }
+        return view('restaurants.show', ['restaurant' => $restaurant]);
     }
 
     /**
