@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="izitoast/css/iziToast.min.css">
+    <link rel="stylesheet" href="{{ asset('assets') }}/izitoast/css/iziToast.min.css">
     @stack('styles')
 </head>
 
@@ -43,7 +43,7 @@
         </div>
         @include('layouts.admin.footer')
 
-        <script src="izitoast/js/iziToast.min.js"></script>
+        <script src="{{ asset('assets') }}/izitoast/js/iziToast.min.js"></script>
         @stack('scripts')
     </div>
 </body>
