@@ -5,13 +5,14 @@ namespace App\Services;
 use Illuminate\Support\Facades\Session;
 
 class CartService {
-    public function __construct() {
+    public static function initCart() {
         if (!Session::has('cart')) {
             Session::put('cart', []);
         }
     }
 
-    public function add(int $id, int $quantity): void {
+    public static function add(int $id, int $quantity): void {
+        self::initCart();
         $cart = Session::get('cart');
         if (isset($cart[$id])) {
             $cart[$id] += $quantity;
@@ -21,7 +22,8 @@ class CartService {
         Session::put('cart', $cart);
     }
 
-    public function remove(int $id, int $quantity): void {
+    public static function remove(int $id, int $quantity): void {
+        self::initCart();
         $cart = Session::get('cart');
         if (isset($cart[$id])) {
             $cart[$id] -= $quantity;
@@ -32,11 +34,12 @@ class CartService {
         }
     }
 
-    public function get(): array {
+    public static function get(): array {
+        self::initCart();
         return Session::get('cart');
     }
 
-    public function clear(): void {
+    public static function clear(): void {
         Session::put('cart', []);
     }
 }
