@@ -7,7 +7,7 @@
     <!-- Cart Modal Button -->
     <button onclick="openCartModal()"
         class="fixed bottom-6 right-6 bg-gray-500 text-white py-2 px-4 rounded-full shadow-md z-20">
-        Cart {{ count($cartItems) > 0 ? $cartQty : '' }}
+        Cart {{ count($cartItems) > 0 ? array_sum($cartItems) : '' }}
     </button>
 
     <!-- Item Modal -->
@@ -26,10 +26,10 @@
                 <p class="text-gray-600">{{ $curItem ? $curItem->description : '' }}</p>
                 <!-- Quantity selector -->
                 <div class="mt-3 flex items-center">
-                    <button wire:click="decrementQuantity"
+                    <button wire:click="decCurItemQty"
                         class="bg-gray-300 text-gray-700 rounded px-3 py-1 mr-2">-</button>
-                    <span class="text-lg">{{ $curQuantity }}</span>
-                    <button wire:click="incrementQuantity"
+                    <span class="text-lg">{{ $curItemQty }}</span>
+                    <button wire:click="incCurItemQty"
                         class="bg-gray-300 text-gray-700 rounded px-3 py-1 ml-2">+</button>
                 </div>
                 <!-- Allergens and toppings here -->
@@ -68,15 +68,15 @@
                                 <p class="text-gray-600">{{ $item->price }}</p>
                             </div>
                             <div class="flex items-center">
-                                <button onclick="decreaseItemQty({{ $itemId }})"
+                                <button wire:click="decItemQty({{ $itemId }})"
                                     class="bg-gray-200 text-gray-600 rounded px-2 py-1">-</button>
                                 <span class="mx-2">{{ $qty }}</span>
-                                <button onclick="increaseItemQty({{ $itemId }})"
+                                <button wire:click="incItemQty({{ $itemId }})"
                                     class="bg-gray-200 text-gray-600 rounded px-2 py-1">+</button>
                             </div>
                         </div>
                     </div>
-                    <button onclick="removeItemFromCart({{ $itemId }})" class="text-red-600">
+                    <button wire:click="removeItemFromCart({{ $itemId }})" class="text-red-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
