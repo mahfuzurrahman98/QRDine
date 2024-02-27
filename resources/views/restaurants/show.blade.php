@@ -36,15 +36,8 @@
             element.classList.add('cat-active');
         }
 
-        // function openItemModal() {
-        //     // alert("on click event fired")
-        //     document.getElementById('itemModal')remove('translate-y-full');
-        //     toggleBackdrop(true);
-        // }
-
         function closeItemModal() {
-            document.getElementById('itemModal').classList.add('translate-y-full');
-            toggleBackdrop(false);
+            Livewire.dispatch('close-item-modal');
         }
 
         function openCartModal() {
@@ -68,6 +61,11 @@
             toggleBackdrop(false);
         }
 
+        function addToCart() {
+            Livewire.dispatch('add-to-cart');
+            closeItemModal();
+        }
+
         // Function to toggle the backdrop visibility and body overflow
         function toggleBackdrop(show) {
             const backdrop = document.getElementById('backdrop');
@@ -87,17 +85,6 @@
                 body.style.overflow = 'auto';
             }
         }
-
-        // document.addEventListener('livewire:init', () => {
-        //     console.log('Livewire initialized');
-        //     Livewire.on('item-selected', ({
-        //         item
-        //     }) => {
-        //         // console.log('Event caught', item);
-        //         // openItemModal();
-        //         return item;
-        //     })
-        // })
     </script>
 </body>
 

@@ -14,6 +14,14 @@ class SimpleRestoTemplate extends Component {
     public int $cartQty = 0;
     public int $curQuantity = 1;
 
+    // Livewire.dispatch('close-item-modal');
+
+    // listeners
+    protected $listeners = [
+        'add-to-cart' => 'addToCart',
+        'close-item-modal' => 'setCurItemToNull',
+    ];
+
     // on mount, set the cart items from the CartService
     public function mount() {
         $this->cartItems = CartService::get();
@@ -22,7 +30,6 @@ class SimpleRestoTemplate extends Component {
 
     public function setCurItem(Item $item) {
         $this->curItem = $item;
-        $this->dispatch('item-selected', ['item' => $item]);
     }
 
     public function render() {
@@ -39,10 +46,15 @@ class SimpleRestoTemplate extends Component {
         }
     }
 
+
     public function addToCart() {
         CartService::add($this->curItem->id, $this->curQuantity);
         $this->cartQty += $this->curQuantity;
         $this->cartItems = CartService::get();
+    }
+
+    public function setCurItemToNull() {
+        unset($this->curItem);
     }
 
     public function removeFromCart() {

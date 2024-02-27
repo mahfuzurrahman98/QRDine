@@ -11,39 +11,36 @@
     </button>
 
     <!-- Item Modal -->
-    @if ($curItem)
-        <div id="itemModal"
-            class="fixed bottom-0 inset-x-0 bg-white p-4 transform transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
-            <!-- Close button and Item name -->
-            <div class="flex justify-between mb-3">
-                <h2 class="text-2xl font-semibold">{{ $curItem->name }}</h2>
-                <button onclick="closeItemModal()"
-                    class="bg-gray-200 text-gray-600 rounded-full px-3 py-1">&times;</button>
-            </div>
-            <!-- Item details -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <img src="{{ $curItem->imageUrl }}" alt="Item Image" class="w-full h-full rounded-md">
-                <div>
-                    <p class="font-semibold text-lg">{{ $curItem->name }}</p>
-                    <p class="text-gray-600">{{ $curItem->description }}</p>
-                    <!-- Quantity selector -->
-                    <div class="mt-3 flex items-center">
-                        <button wire:click="decrementQuantity"
-                            class="bg-gray-300 text-gray-700 rounded px-3 py-1 mr-2">-</button>
-                        <span class="text-lg">{{ $curQuantity }}</span>
-                        <button wire:click="incrementQuantity"
-                            class="bg-gray-300 text-gray-700 rounded px-3 py-1 ml-2">+</button>
-                    </div>
-                    <!-- Allergens and toppings here -->
-                    <!-- ... -->
-                </div>
-            </div>
-            <!-- Checkout button -->
-            <button wire:click="addToCart" class="w-full bg-blue-500 text-white py-2 mt-4 rounded-lg">
-                Add to Cart
-            </button>
+    <div id="itemModal"
+        class="{{ $curItem ? '' : 'translate-y-full' }} fixed bottom-0 inset-x-0 bg-white p-4 transform transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
+        <!-- Close button and Item name -->
+        <div class="flex justify-between mb-3">
+            <h2 class="text-2xl font-semibold">{{ $curItem ? $curItem->name : '' }}</h2>
+            <button onclick="closeItemModal()" class="bg-gray-200 text-gray-600 rounded-full px-3 py-1">&times;</button>
         </div>
-    @endif
+        <!-- Item details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <img src="{{ $curItem ? $curItem->imageUrl : '' }}" alt="Item Image" class="w-full h-full rounded-md">
+            <div>
+                <p class="font-semibold text-lg">{{ $curItem ? $curItem->name : '' }}</p>
+                <p class="text-gray-600">{{ $curItem ? $curItem->description : '' }}</p>
+                <!-- Quantity selector -->
+                <div class="mt-3 flex items-center">
+                    <button wire:click="decrementQuantity"
+                        class="bg-gray-300 text-gray-700 rounded px-3 py-1 mr-2">-</button>
+                    <span class="text-lg">{{ $curQuantity }}</span>
+                    <button wire:click="incrementQuantity"
+                        class="bg-gray-300 text-gray-700 rounded px-3 py-1 ml-2">+</button>
+                </div>
+                <!-- Allergens and toppings here -->
+                <!-- ... -->
+            </div>
+        </div>
+        <!-- Checkout button -->
+        <button onclick="addToCart()" class="w-full bg-blue-500 text-white py-2 mt-4 rounded-lg">
+            Add to Cart
+        </button>
+    </div>
 
 
     <!-- Cart Modal -->
