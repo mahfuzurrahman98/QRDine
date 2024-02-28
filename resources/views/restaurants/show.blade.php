@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $restaurant->name }} Menu</title>
-    @vite(['resources/css/app.css'])
-    @livewireStyles
+    @vite(['resources/css/app.css', 'resources/js/restaurant-front.ts'])
 
     <style>
         .category-link.cat-active {
@@ -19,11 +18,8 @@
 </head>
 
 <body class="bg-gray-100 relative">
-    @livewire('simple-resto-template', [
-        'restaurant' => $restaurant,
-    ])
 
-    @livewireScripts
+    @include('templates.hunger-template')
 
     <script>
         function toggleActive(element) {
@@ -37,7 +33,6 @@
         }
 
         function closeItemModal() {
-            Livewire.dispatch('close-item-modal');
         }
 
         function openCartModal() {
@@ -62,7 +57,6 @@
         }
 
         function addToCart() {
-            Livewire.dispatch('add-to-cart');
             closeItemModal();
         }
 

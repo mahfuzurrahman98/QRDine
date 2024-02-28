@@ -1,17 +1,14 @@
+<?php
+// dd(Session::all());
+?>
 <div>
     <!-- Backdrop overlay -->
     <div id="backdrop"
         class="fixed inset-0 bg-black opacity-0 pointer-events-none z-10 transition-opacity duration-300 ease-in-out">
     </div>
 
-    <!-- Cart Modal Button -->
-    <button onclick="openCartModal()"
-        class="fixed bottom-6 right-6 bg-gray-500 text-white py-2 px-4 rounded-full shadow-md z-20">
-        Cart {{ count($cartItems) > 0 ? array_sum($cartItems) : '' }}
-    </button>
-
     <!-- Item Modal -->
-    <div id="itemModal"
+    {{-- <div id="itemModal"
         class="{{ $curItem ? '' : 'translate-y-full' }} fixed bottom-0 inset-x-0 bg-white p-4 transform transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
         <!-- Close button and Item name -->
         <div class="flex justify-between mb-3">
@@ -40,55 +37,12 @@
         <button onclick="addToCart()" class="w-full bg-blue-500 text-white py-2 mt-4 rounded-lg">
             Add to Cart
         </button>
-    </div>
+    </div> --}}
 
 
-    <!-- Cart Modal -->
-    <div id="cartModal"
-        class="fixed bottom-0 inset-x-0 bg-white p-4 transform translate-y-full transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
-        <!-- Close button -->
-        <div class="flex justify-between mb-3">
-            <h2 class="text-2xl font-semibold">Cart</h2>
-            <button onclick="closeCartModal()" class="bg-gray-200 text-gray-600 rounded-full px-3 py-1">&times;</button>
-        </div>
-        <!-- Cart items list -->
-        <div class="overflow-y-auto max-h-96">
-            <!-- Iterate over cart items and display them here -->
-            @foreach ($cartItems as $itemId => $qty)
-                @php
-                    $item = App\Models\Item::find($itemId);
-                @endphp
-                <div class="flex items-center justify-between border-b border-gray-200 py-2">
-                    <div class="flex space-x-4">
-                        <img src="{{ 'https://rimazkitchen.bikri.io/uploads/restorants/19/d4f6f2a1-f34c-42e9-9537-4ea6d29cd451_thumbnail.jpg' }}"
-                            alt="Item Image" class="w-16 h-16 rounded-md">
-                        <div class="flex flex-col justify-between">
-                            <div>
-                                <p class="font-semibold">{{ $item->name }}</p>
-                                <p class="text-gray-600">{{ $item->price }}</p>
-                            </div>
-                            <div class="flex items-center">
-                                <button wire:click="decItemQty({{ $itemId }})"
-                                    class="bg-gray-200 text-gray-600 rounded px-2 py-1">-</button>
-                                <span class="mx-2">{{ $qty }}</span>
-                                <button wire:click="incItemQty({{ $itemId }})"
-                                    class="bg-gray-200 text-gray-600 rounded px-2 py-1">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    <button wire:click="removeItemFromCart({{ $itemId }})" class="text-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            @endforeach
-        </div>
-        <!-- Checkout button -->
-        <button onclick="openCheckoutModal()"
-            class="w-full bg-gray-500 text-white py-2 mt-4 rounded-lg">Checkout</button>
+
+    <div id="cart">
+
     </div>
 
     <!-- Checkout Modal -->
@@ -151,8 +105,7 @@
         <div class="flex flex-col gap-y-6 mt-6 mb-5">
             @foreach ($restaurant->categories as $category)
                 @if ($category->items->isNotEmpty() && $category->active)
-                    <div class="bg-green-10 max-w-5xl rounded-lg"
-                        id="cat-{{ str_replace(' ', '-', $category->name) }}">
+                    <div class="bg-green-10 max-w-5xl rounded-lg" id="cat-{{ str_replace(' ', '-', $category->name) }}">
                         <h2 class="text-xl font-semibold mb-2">{{ $category->name }}</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @foreach ($category->items as $item)

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Item;
 use Illuminate\Support\Facades\Session;
 
 class CartService {
@@ -36,7 +37,18 @@ class CartService {
 
     public static function get(): array {
         self::initCart();
-        return Session::get('cart');
+        $cart = Session::get('cart');
+
+        $cartItems = [];
+        foreach ($cart as $itemId => $quantity) {
+            $item = Item::find($itemId);
+            $cartItems[] = [
+                'item' => $item,
+                'quantity' => $quantity
+            ];
+        }
+
+        return $cartItems;
     }
 
     public static function clear(): void {

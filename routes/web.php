@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\AllergenController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AllergenController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\DineinTableController;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,11 +79,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     });
-
-    // cart and checkout
-    Route::get('/cart', [OrderController::class, 'cart'])->name('cart');
-    Route::post('/cart', [OrderController::class, 'addToCart'])->name('cart.store');
-    Route::put('/cart/{item}', [OrderController::class, 'updateCart'])->name('cart.update');
-    Route::delete('/cart/{item}', [OrderController::class, 'removeFromCart'])->name('cart.destroy');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 });
+
+// cart and checkout
+Route::get('/cart', [CartController::class, 'get'])->name('cart');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+Route::post('/orders', [CartController::class, 'store'])->name('orders.store');
