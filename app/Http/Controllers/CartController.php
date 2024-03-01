@@ -52,10 +52,7 @@ class CartController extends Controller {
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first(),
-                'data' => [
-                    'cart' => CartService::get()
-                ]
+                'message' => $validator->errors()->first()
             ], 400);
         }
 
@@ -63,7 +60,10 @@ class CartController extends Controller {
 
         return response()->json([
             'success' => true,
-            'message' => 'Item added to cart'
+            'message' => 'Item added to cart',
+            'data' => [
+                'cart' => CartService::get()
+            ]
         ], 200);
     }
 
