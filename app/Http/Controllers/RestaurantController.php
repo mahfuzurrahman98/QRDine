@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RestaurantController extends Controller {
     /**
@@ -60,5 +62,26 @@ class RestaurantController extends Controller {
      */
     public function destroy(Restaurant $restaurant) {
         //
+    }
+
+
+    public function getItem(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'itemId' => 'required|integer|exists:items,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'item' => Item::find($request->itemId)
+            ]
+        ], 200);
     }
 }
