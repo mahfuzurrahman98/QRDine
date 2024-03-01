@@ -27,6 +27,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/resto/{slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
+Route::post('/resto/items', [RestaurantController::class, 'getItem'])->name('restaurants.get-item');
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -80,6 +81,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     });
 });
+
+
 
 // cart and checkout
 Route::get('/cart', [CartController::class, 'get'])->name('cart');
