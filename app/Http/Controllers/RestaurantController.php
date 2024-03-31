@@ -54,7 +54,38 @@ class RestaurantController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Restaurant $restaurant) {
-        dd($request->all());
+        try {
+            // merge the request with the boolean values
+            $request->merge([
+                'enable_ordering' => $request->has('enable_ordering'),
+                'cod' => $request->has('cod'),
+                'stripe_payment' => $request->has('stripe_payment'),
+                'enable_wa_notification' => $request->has('enable_wa_notification'),
+            ]);
+
+            // the phone only contain numbers and + sign, not required
+            // not more than 15 characters, not less than 10 characters
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'address' => 'required|string',
+                'minimum_order_amount' => 'nullable|numeric',
+                'enable_ordering' => 'required|boolean',
+                'cod' => 'required|boolean',
+                'stripe_payment' => 'required|boolean',
+                'phone' => 'nullable|regex:/^[0-9+]{10,15}$/',
+                'enable_wa_notification' => 'required|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return back()->withError($validator->errors()->first());
+            }
+
+            $restaurant->update($request->all());
+            return back()->withStatus('Restaurant updated successfully');
+        } catch (\Exception $e) {
+            return back()->withError($e->getMessage());
+        }
     }
 
     /**
