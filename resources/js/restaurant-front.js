@@ -114,6 +114,26 @@ window.onload = () => {
                 addToCart(this.item.id, this.quantity);
                 this.closeItemModal();
             },
+            isNumber(event) {
+                if (
+                    !Number.isInteger(Number(event.key)) &&
+                    event.keyCode !== 8 &&
+                    event.keyCode !== 46
+                ) {
+                    event.preventDefault();
+                }
+            },
+        },
+        watch: {
+            quantity(newVal) {
+                const valType = typeof newVal;
+                if (valType === "string") {
+                    newVal = newVal.replace(/\D/g, "");
+                    this.quantity = newVal == "0" ? 1 : Number(newVal);
+                } else if (valType === "number") {
+                    this.quantity = newVal == 0 ? 1 : newVal;
+                }
+            },
         },
     }).mount("#itemModal");
 };
