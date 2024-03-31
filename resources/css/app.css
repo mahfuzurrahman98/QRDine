@@ -13,4 +13,8 @@
     body {
         font-family: "Lato", sans-serif;
     }
+
+    [v-cloak] {
+        display: none;
+    }
 }
