@@ -6,7 +6,8 @@
 
     <!-- Item Modal -->
     <div id="itemModal"
-        class="translate-y-full fixed bottom-0 inset-x-0 bg-white p-4 transform transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
+        class="translate-y-full fixed bottom-0 inset-x-0 bg-white p-4 transform transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2"
+        v-cloak>
         <!-- Close button and Item name -->
         <div class="flex justify-between mb-3">
             <h2 class="text-2xl font-semibold">@{{ item.name }}</h2>
@@ -44,17 +45,19 @@
     </div>
 
     <div id="cart">
-        <div class="group">
-            <button @click="openCartModal()"
-                class="fixed flex bottom-6 right-6 bg-gray-500 text-white py-2 px-4 rounded-full shadow-md z-20 hover:bg-black">
-                Cart <span class="ml-1 hidden group-hover:block">(@{{ cart.length }})</span>
-            </button>
-        </div>
+        <button @click="openCartModal()" id="cartBtn"
+            class="fixed bottom-6 right-6 bg-gray-500 text-white py-2 px-4 rounded-full shadow-md z-20 hover:bg-black">
+            Cart
+            <span v-if="cart.length > 0" class="ml-1 group-hover:block" v-cloak>
+                (@{{ cart.length }})
+            </span>
+        </button>
 
 
         <!-- Cart Modal -->
         <div id="cartModal"
-            class="fixed bottom-0 inset-x-0 bg-white p-4 transform translate-y-full transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2 h-[90vh] flex flex-col">
+            class="fixed bottom-0 inset-x-0 bg-white p-4 transform translate-y-full transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2 h-[90vh] flex flex-col"
+            v-cloak>
             <!-- Close button -->
             <div class="flex justify-between mb-3">
                 <h2 class="text-2xl font-semibold">Cart</h2>
@@ -119,7 +122,8 @@
 
     <!-- Checkout Modal -->
     <div id="checkoutModal"
-        class="fixed bottom-0 inset-x-0 bg-white p-4 transform translate-y-full transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2">
+        class="fixed bottom-0 inset-x-0 bg-white p-4 transform translate-y-full transition duration-300 ease-in-out z-30 rounded-t-3xl mx-2"
+        v-cloak>
 
         <div class="flex justify-between mb-3">
             <h2 class="text-2xl font-semibold">Checkout</h2>
@@ -184,16 +188,16 @@
                             @foreach ($category->items as $item)
                                 <div class="flex items-center gap-x-2 justify-between border p-2 mb-2 rounded-lg cursor-pointer"
                                     onclick="setCurItem({{ $item->id }})">
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ $item->logo != '' ? $item->logo : 'https://rimazkitchen.bikri.io/uploads/restorants/19/d4f6f2a1-f34c-42e9-9537-4ea6d29cd451_thumbnail.jpg' }}"
+                                            alt="{{ $item->name }}" class="w-20 h-20 rounded-full">
+                                    </div>
                                     <div class="ml-3">
                                         <p class="text-md font-semibold">{{ $item->name }}</p>
                                         <p class="text-gray-600">{{ $item->price }}</p>
                                         <!-- Description for small devices -->
                                         <p class="text-gray-500">
                                             {{ Str::limit($item->description, 50) }}</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <img src="{{ $item->logo != '' ? $item->logo : 'https://rimazkitchen.bikri.io/uploads/restorants/19/d4f6f2a1-f34c-42e9-9537-4ea6d29cd451_thumbnail.jpg' }}"
-                                            alt="{{ $item->name }}" class="w-20 h-20 rounded-md">
                                     </div>
                                 </div>
                             @endforeach
