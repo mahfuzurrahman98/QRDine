@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <title>Restaurant Tableside Ordering</title>
+    <title>QRDine</title>
     @vite(['resources/css/app.css'])
     <link rel="apple-touch-icon" sizes="180x180" href="">
 
