@@ -1,5 +1,7 @@
 @extends('layouts.admin.master')
 
+@section('title', 'Coupons')
+
 @section('main')
     <div class="flex justify-between mb-5">
         <h1 class="text-2xl font-bold text-black dark:text-gray-200">Coupons</h1>

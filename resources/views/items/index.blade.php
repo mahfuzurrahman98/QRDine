@@ -1,5 +1,7 @@
 @extends('layouts.admin.master')
 
+@section('title', 'Items')
+
 @push('styles')
     <link href="https://cdn.datatables.net/v/dt/dt-2.0.0/datatables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/2.0.0/css/dataTables.tailwindcss.css" rel="stylesheet">

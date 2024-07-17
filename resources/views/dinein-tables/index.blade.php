@@ -1,5 +1,7 @@
 @extends('layouts.admin.master')
 
+@section('title', 'Dinein Tables')
+
 @section('main')
     <!-- Add modal -->
     <div id="add-table-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"

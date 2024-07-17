@@ -1,5 +1,7 @@
 @extends('layouts.admin.master')
 
+@section('title', 'Categories')
+
 @section('main')
     <!-- Add modal -->
     <div id="add-category-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
