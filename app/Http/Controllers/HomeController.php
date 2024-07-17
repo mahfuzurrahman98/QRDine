@@ -16,19 +16,46 @@ class HomeController extends Controller {
 
         if ($isMasterAdmin) {
             // Master Admin Data
-            $totalRevenue = Order::sum('amount');
-            $totalOrders = Order::count();
-            $totalCustomers = Order::distinct('customer_email')->count();
-            $activeCoupons = Coupon::where('valid_from', '<=', now())->where('valid_to', '>=', now())->count();
-            $ordersToday = Order::whereDate('created_at', today())->count();
-            $ordersLast7Days = Order::whereDate('created_at', '>=', now()->subDays(7))->count();
-            $ordersLast30Days = Order::whereDate('created_at', '>=', now()->subDays(30))->count();
-            $salesToday = Order::whereDate('created_at', today())->sum('amount');
-            $salesLast7Days = Order::whereDate('created_at', '>=', now()->subDays(7))->sum('amount');
-            $salesLast30Days = Order::whereDate('created_at', '>=', now()->subDays(30))->sum('amount');
+            $totalRevenue = Order::where('status', 6)->sum('amount');
+
+            $totalOrders = Order::where('status', 6)->count();
+
+            $totalCustomers = Order::where('status', 6)
+                ->distinct('customer_phone')
+                ->count();
+
+            $activeCoupons = Coupon::where('valid_from', '<=', now())
+                ->where('valid_to', '>=', now())
+                ->count();
+
+            $ordersToday = Order::where('status', 6)
+                ->whereDate('created_at', today())
+                ->count();
+
+            $ordersLast7Days = Order::where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(7))
+                ->count();
+
+            $ordersLast30Days = Order::where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(30))
+                ->count();
+
+            $salesToday = Order::where('status', 6)
+                ->whereDate('created_at', today())
+                ->sum('amount');
+
+            $salesLast7Days = Order::where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(7))
+                ->sum('amount');
+
+            $salesLast30Days = Order::where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(30))
+                ->sum('amount');
 
             $topPerformingRestaurants = Restaurant::select('id', 'name')
-                ->withCount('orders')
+                ->withCount(['orders' => function ($query) {
+                    $query->where('status', 6);
+                }])
                 ->orderBy('orders_count', 'desc')
                 ->limit(7)
                 ->get();
@@ -56,25 +83,58 @@ class HomeController extends Controller {
             // Resto Owner Data
             $restaurantId = $user->restaurant->id;
 
-            $totalRevenue = Order::where('restaurant_id', $restaurantId)->sum('amount');
-            $totalOrders = Order::where('restaurant_id', $restaurantId)->count();
-            $totalCustomers = Order::where('restaurant_id', $restaurantId)->distinct('customer_email')->count();
-            $activeCoupons = Coupon::where('valid_from', '<=', now())->where('valid_to', '>=', now())->count();
+            $totalRevenue = Order::where('restaurant_id', $restaurantId)
+                ->where('status', 6)
+                ->sum('amount');
+
+            $totalOrders = Order::where('restaurant_id', $restaurantId)
+                ->where('status', 6)
+                ->count();
+
+            $totalCustomers = Order::where('restaurant_id', $restaurantId)
+                ->where('status', 6)
+                ->distinct('customer_email')
+                ->count();
+
+            $activeCoupons = Coupon::where('valid_from', '<=', now())
+                ->where('valid_to', '>=', now())
+                ->count();
+
             $ordersToday = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', today())->count();
+                ->where('status', 6)
+                ->whereDate('created_at', today())
+                ->count();
+
             $ordersLast7Days = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', '>=', now()->subDays(7))->count();
+                ->where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(7))
+                ->count();
+
             $ordersLast30Days = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', '>=', now()->subDays(30))->count();
+                ->where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(30))
+                ->count();
+
             $salesToday = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', today())->sum('amount');
+                ->where('status', 6)
+                ->whereDate('created_at', today())
+                ->sum('amount');
+
             $salesLast7Days = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', '>=', now()->subDays(7))->sum('amount');
+                ->where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(7))
+                ->sum('amount');
+
             $salesLast30Days = Order::where('restaurant_id', $restaurantId)
-                ->whereDate('created_at', '>=', now()->subDays(30))->sum('amount');
+                ->where('status', 6)
+                ->whereDate('created_at', '>=', now()->subDays(30))
+                ->sum('amount');
 
             // Fetch orders for the specific restaurant (or all orders if master admin)
-            $orders = Order::where('restaurant_id', $restaurantId)->get();
+            $orders = Order::where('restaurant_id', $restaurantId)
+                ->where('status', 6)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             // Iterate through each order and accumulate item quantities
             foreach ($orders as $order) {
