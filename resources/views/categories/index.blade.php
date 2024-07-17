@@ -120,18 +120,18 @@
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-sm">
+                <thead class="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="text-base">
+                        <th scope="col" class="px-6 py-3">
                             Name
                         </th>
-                        <th scope="col" class="px-6 py-3 text-sm">
+                        <th scope="col" class="px-6 py-3">
                             Active
                         </th>
-                        <th scope="col" class="px-6 py-3 text-sm">
+                        <th scope="col" class="px-6 py-3">
                             Created at
                         </th>
-                        <th scope="col" class="px-6 py-3 text-sm">
+                        <th scope="col" class="px-6 py-3">
                             Actions
                         </th>
                     </tr>

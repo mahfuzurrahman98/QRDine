@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'image', 'active', 'category_id'];
+    protected $fillable = [
+        'name', 'description',
+        'price', 'image', 'active',
+        'category_id', 'allergens'
+    ];
 
     // define accessors
     public function getLogoAttribute() {
@@ -28,7 +32,7 @@ class Item extends Model {
         return $this->belongsTo(Category::class);
     }
 
-    public function allergens() {
-        return Allergen::findByItem($this->id);
+    public function getItemAllergensAttribute() {
+        return json_decode($this->allergens, true);
     }
 }

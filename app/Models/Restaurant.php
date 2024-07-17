@@ -9,12 +9,13 @@ class Restaurant extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug',
-        'description', 'address',
+        'name', 'slug', 'description', 'address',
         'phone', 'logo', 'cover',
-        'enable_ordering', 'enable_wa_notification',
+        'enable_ordering', 'disable_ordering_message',
+        'enable_wa_notification',
         'minimum_order_amount', 'active',
-        'stripe_id', 'user_id'
+        'cod', 'stripe_payment', 'stripe_id',
+        'user_id'
     ];
 
     // define accessors
@@ -37,5 +38,9 @@ class Restaurant extends Model {
 
     public function dineinTables() {
         return $this->hasMany(DineinTable::class);
+    }
+
+    public function orders() {
+        return $this->hasMany(Order::class);
     }
 }

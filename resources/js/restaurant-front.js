@@ -1,6 +1,8 @@
 import { createApp } from "vue/dist/vue.esm-bundler.js";
 import axios from "axios";
 import {
+    openOrderConfirmationModal,
+    closeOrderConfirmationModal,
     openItemModal,
     closeItemModal,
     openCartModal,
@@ -11,6 +13,8 @@ import {
 
 let CartComponent = null;
 let CurItemComponent = null;
+let CheckoutComponent = null;
+let OrderConfirmationComponent = null;
 
 const toggleActive = (element) => {
     // Remove 'active' class from all category links
@@ -69,6 +73,83 @@ const clearCart = () => {
         })
         .catch((error) => {
             console.error(error);
+            throw error;
+        });
+};
+
+const applyCoupon = () => {
+    CheckoutComponent.couponApplied = "pending";
+    if (!CheckoutComponent.couponCode) {
+        CheckoutComponent.couponApplied = "error";
+        return;
+    }
+    axios
+        .post("/coupons/apply", {
+            code: CheckoutComponent.couponCode,
+            payment_amount: CheckoutComponent.paymentAmount,
+            restaurant_id: CheckoutComponent.restaurantId,
+        })
+        .then((response) => {
+            const data = response.data.data;
+            CheckoutComponent.discount = data.discount;
+            CheckoutComponent.couponApplied = "success";
+        })
+        .catch((error) => {
+            CheckoutComponent.couponApplied = "error";
+            console.error(error);
+        });
+};
+
+const placeOrder = () => {
+    // only pick item id and quantity
+    let cart = [];
+    for (let cartItem of CartComponent.cart) {
+        cart.push({
+            itemId: cartItem.item.id,
+            quantity: cartItem.quantity,
+        });
+    }
+
+    // console.log(CheckoutComponent.paymentMethod);
+    // return;
+
+    CheckoutComponent.submitBtnLoading = true;
+    axios
+        .post("/orders", {
+            restaurantId: CheckoutComponent.restaurantId,
+            tableId: CheckoutComponent.tableId,
+            cart,
+            customer: CheckoutComponent.customer,
+            paymentMethod: CheckoutComponent.paymentMethod,
+            couponCode: CheckoutComponent.couponCode,
+        })
+        .then((response) => {
+            const data = response.data.data;
+
+            clearCart();
+
+            const order = data.order;
+            console.log(order);
+            if (order.payment_method === "card") {
+                window.location.href = data.redirect_url;
+            } else {
+                console.log("here we are");
+                // cash payment
+                OrderConfirmationComponent.orderId = order.id;
+                OrderConfirmationComponent.paymentMethod = "cash";
+                OrderConfirmationComponent.loading = false;
+
+                CheckoutComponent.discount = null;
+                CheckoutComponent.couponApplied = "";
+                CheckoutComponent.couponCode = "";
+
+                CheckoutComponent.closeCheckoutModal();
+                OrderConfirmationComponent.openOrderConfirmationModal();
+            }
+        })
+        .catch((error) => {
+            CheckoutComponent.error = error.response.data.message;
+            CheckoutComponent.submitBtnLoading = false;
         });
 };
 
@@ -86,6 +167,15 @@ window.onload = () => {
             addToCart,
             removeFromCart,
             clearCart,
+        },
+        computed: {
+            cartTotal() {
+                let total = 0;
+                for (let item of this.cart) {
+                    total += item.item.price * item.quantity;
+                }
+                return total;
+            },
         },
         mounted() {
             getCart();
@@ -136,11 +226,97 @@ window.onload = () => {
             },
         },
     }).mount("#itemModal");
+
+    CheckoutComponent = createApp({
+        data() {
+            return {
+                restaurantId: restoId,
+                tableId: tableId,
+                customer: {
+                    name: "",
+                    phone: "",
+                    email: "",
+                },
+                discount: null,
+                couponApplied: "",
+                paymentMethod: "cash",
+                couponCode: "",
+                submitBtnLoading: false,
+                error: null,
+            };
+        },
+        methods: {
+            openCheckoutModal,
+            closeCheckoutModal,
+            placeOrder,
+            applyCoupon,
+        },
+        computed: {
+            paymentAmount() {
+                let cartTotal = CartComponent.cartTotal;
+                return cartTotal;
+            },
+        },
+        mounted() {
+            getCart();
+        },
+    }).mount("#checkoutModal");
+
+    OrderConfirmationComponent = createApp({
+        data() {
+            return {
+                loading: true,
+                orderId: orderId,
+                paymentId: paymentId,
+                error: null,
+            };
+        },
+        methods: {
+            openOrderConfirmationModal() {
+                // Logic to open modal
+                this.loading = false;
+                // this.error = null;
+                openOrderConfirmationModal();
+            },
+            closeOrderConfirmationModal() {
+                this.orderId = null;
+                this.paymentId = null;
+                this.loading = false;
+                this.error = null;
+                closeOrderConfirmationModal();
+            },
+            sendToWhatsApp() {
+                axios
+                    .post("/orders/send", {
+                        order_id: this.orderId,
+                    })
+                    .then((response) => {
+                        const data = response.data.data;
+                        const redirect_url = data.redirect_url;
+                        window.location.href = redirect_url;
+
+                        this.loading = false;
+                        this.error = null;
+                    })
+                    .catch((error) => {
+                        this.loading = false;
+                        this.error = error.response.data.message;
+                    });
+            },
+        },
+    }).mount("#orderConfirmationModal");
 };
+
+window.openCheckoutModal = () => {
+    closeCartModal();
+    openCheckoutModal();
+};
+
+window.closeCheckoutModal = closeCheckoutModal;
 
 window.setCurItem = (itemId) => {
     axios
-        .post(`/resto/items`, {
+        .post("/resto/items", {
             itemId,
         })
         .then((response) => {
@@ -152,3 +328,9 @@ window.setCurItem = (itemId) => {
             console.error(error);
         });
 };
+
+window.addEventListener("load", function () {
+    if (orderId && paymentId) {
+        OrderConfirmationComponent.openOrderConfirmationModal();
+    }
+});

@@ -1,76 +1,243 @@
+@php
+    $orderStatuses = array_map(function ($status) {
+        return ucfirst($status);
+    }, config('order.statuses'));
+    $paymentMethods = ['cash' => 'Cash', 'card' => 'Card'];
+@endphp
+
 @extends('layouts.admin.master')
 
 @section('main')
-    <div class="grid w-full grid-cols-1 gap-4 mt-4 xl:grid-cols-2 2xl:grid-cols-3">
-        <div
-            class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <div class="w-full">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">New products</h3>
-                <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">2,340</span>
-                <p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
-                    <span class="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z">
-                            </path>
-                        </svg>
-                        12.5%
-                    </span>
-                    Since last month
+    {{-- Tiles --}}
+    <div class="grid w-full grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-4 mb-8">
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Total revenue</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">£{{ $totalRevenue }}</p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-money-bill"></i>
                 </p>
             </div>
-            <div class="w-full" id="new-products-chart"></div>
-        </div>
-        <div
-            class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <div class="w-full">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Users</h3>
-                <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">2,340</span>
-                <p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
-                    <span class="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z">
-                            </path>
-                        </svg>
-                        3,4%
-                    </span>
-                    Since last month
-                </p>
-            </div>
-            <div class="w-full" id="week-signups-chart"></div>
         </div>
         <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <div class="w-full">
-                <h3 class="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">Audience by age</h3>
-                <div class="flex items-center mb-2">
-                    <div class="w-16 text-sm font-medium dark:text-white">50+</div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500" style="width: 18%"></div>
-                    </div>
-                </div>
-                <div class="flex items-center mb-2">
-                    <div class="w-16 text-sm font-medium dark:text-white">40+</div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500" style="width: 15%"></div>
-                    </div>
-                </div>
-                <div class="flex items-center mb-2">
-                    <div class="w-16 text-sm font-medium dark:text-white">30+</div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500" style="width: 60%"></div>
-                    </div>
-                </div>
-                <div class="flex items-center mb-2">
-                    <div class="w-16 text-sm font-medium dark:text-white">20+</div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500" style="width: 30%"></div>
-                    </div>
-                </div>
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Total orders</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $totalOrders }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </p>
             </div>
-            <div id="traffic-channels-chart" class="w-full"></div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Total customers</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $totalCustomers }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-users"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Active coupons</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $activeCoupons }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-ticket"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Tody's orders</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $ordersToday }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Orders (Last 7 days)</h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $ordersLast7Days }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">
+                Orders (Last 30 days)
+            </h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    {{ $ordersLast30Days }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">
+                Sales (Today)
+            </h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    £{{ $salesToday }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-money-bill"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">
+                Sales (Last 7 days)
+            </h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    £{{ $salesLast7Days }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-money-bill"></i>
+                </p>
+            </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">
+                Sales (Last 30 days)
+            </h3>
+            <div class="flex items-end justify-between">
+                <p class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                    £{{ $salesLast30Days }}
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-3xl">
+                    <i class="fa-solid fa-money-bill"></i>
+                </p>
+            </div>
         </div>
     </div>
+
+    {{-- Tables --}}
+    @if (auth()->user()->type == 2)
+        <div class="mb-2 grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+                <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Recent Orders</h3>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr class="text-base">
+                                <th scope="col" class="px-6 py-3">
+                                    ID
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    No of items
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Payable
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    method
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Last update
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($recentOrders as $order)
+                                <tr
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <a class="text-blue-600 dark:text-blue-400 underline"
+                                            href="{{ route('orders.show', $order->id) }}">#{{ $order->id }}</a>
+                                    </th>
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ count($order->items) }}
+                                    </th>
+                                    <td class="px-6 py-4">
+                                        @if ($order->coupon)
+                                            £{{ $order->amount - $order->coupon->discount }}
+                                        @else
+                                            £{{ $order->amount }}
+                                        @endif
+                                    </td>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ ucfirst($order->payment_method) }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ $order->updated_at ? $order->updated_at->setTimezone('GMT')->format('d M Y, H:i:s') : $order->created_at->setTimezone('GMT')->format('d M Y, H:i:s') }}
+                                        GMT
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @include('orders.partials.status-badge', [
+                                            'status' => $order->status,
+                                        ])
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @include('orders.partials.status-update', [
+                                            'status' => $order->status,
+                                            'paymentMethod' => $order->payment_method,
+                                        ])
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-span-1">
+                <h3 class="text-xl font-normal text-gray-500 dark:text-gray-400 mb-2">Top selling Items</h3>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr class="text-base">
+                                <th scope="col" class="px-6 py-3">
+                                    Name
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Quantity
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($topSellingItems as $item)
+                                <tr
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ $item['name'] }}
+                                    </th>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ $item['quantity'] }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection

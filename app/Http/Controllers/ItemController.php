@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Restaurant;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Laravel\Facades\Image;
-use Illuminate\Support\Str;
 
 class ItemController extends Controller {
     public function index() {
         $categories = auth()->user()->restaurant->categories;
-        $items = Item::where('category_id', [$categories->pluck('id')->toArray()])
+        $categoryIds = $categories->pluck('id')->toArray();
+
+        // Retrieve items where category_id is in the array of category IDs
+        $items = Item::whereIn('category_id', $categoryIds)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -20,8 +24,24 @@ class ItemController extends Controller {
 
     public function create() {
         $categories = auth()->user()->restaurant->categories;
+
+        $allergens = auth()
+            ->user()
+            ->restaurant
+            ->categories
+            ->flatMap(function ($category) {
+                return $category
+                    ->items
+                    ->flatMap(function ($item) {
+                        return $item->itemAllergens;
+                    });
+            });
+        $configAllergens = array_values(config('item.allergens')); // Convert associative array to indexed array
+        $allergens = array_unique(array_merge($allergens->toArray(), $configAllergens)); // Convert $allergens to array before merging
+
         return view('items.create', [
-            'categories' => $categories
+            'categories' => $categories,
+            'allergens' => $allergens
         ]);
     }
 
@@ -32,6 +52,7 @@ class ItemController extends Controller {
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id' => 'required|exists:categories,id',
+            'allergens' => 'array',
         ]);
 
         if ($validator->fails()) {
@@ -46,6 +67,7 @@ class ItemController extends Controller {
             $item->price = $request->price;
             $item->active = $request->active == 'on' ? 1 : 0;
             $item->category_id = $request->category_id;
+            $item->allergens = json_encode($request->allergens);
 
             // Handle image upload if provided
             if ($request->hasFile('image')) {
@@ -92,8 +114,24 @@ class ItemController extends Controller {
 
     public function edit(Item $item) {
         $categories = auth()->user()->restaurant->categories;
+
+        $allergens = auth()
+            ->user()
+            ->restaurant
+            ->categories
+            ->flatMap(function ($category) {
+                return $category
+                    ->items
+                    ->flatMap(function ($item) {
+                        return $item->itemAllergens;
+                    });
+            });
+        $configAllergens = array_values(config('item.allergens')); // Convert associative array to indexed array
+        $allergens = array_unique(array_merge($allergens->toArray(), $configAllergens)); // Convert $allergens to array before merging
+
         return view('items.edit', [
             'item' => $item,
+            'allergens' => $allergens,
             'categories' => $categories
         ]);
     }
@@ -105,6 +143,7 @@ class ItemController extends Controller {
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id' => 'required|exists:categories,id',
+            'allergens' => 'array',
         ]);
 
         if ($validator->fails()) {
@@ -118,6 +157,7 @@ class ItemController extends Controller {
             $item->price = $request->price;
             $item->active = $request->active == 'on' ? 1 : 0;
             $item->category_id = $request->category_id;
+            $item->allergens = json_encode($request->allergens);
 
             // Handle image upload if provided
             if ($request->hasFile('image')) {
@@ -150,44 +190,27 @@ class ItemController extends Controller {
                 $largeImage->cover(500, 400);
                 $largeImage->save(public_path($baseDir . '/' . $imageNameLarge));
 
-                // Delete old images
-                if ($item->image) {
-                    $oldImageOriginal = public_path($baseDir . '/' . $item->image . '_original.jpg');
-                    $oldImageSmall = public_path($baseDir . '/' . $item->image . '_small.jpg');
-                    $oldImageLarge = public_path($baseDir . '/' . $item->image . '_large.jpg');
-
-                    if (file_exists($oldImageOriginal)) {
-                        unlink($oldImageOriginal);
-                    }
-                    if (file_exists($oldImageSmall)) {
-                        unlink($oldImageSmall);
-                    }
-                    if (file_exists($oldImageLarge)) {
-                        unlink($oldImageLarge);
-                    }
-                }
-
                 // Store the original image name (or whichever you prefer) in the database
                 $item->image = $originalImageName;
-            } else if ($request->has('image_ex')) {
-                // delete old images
+            } else if ($request->image_ex == 1) {
+                // delete the existing images
                 $restoSlug = auth()->user()->restaurant->slug;
                 $baseDir = "uploads/restaurants/$restoSlug/items";
-                $oldImageOriginal = public_path($baseDir . '/' . $item->image . '_original.jpg');
-                $oldImageSmall = public_path($baseDir . '/' . $item->image . '_small.jpg');
-                $oldImageLarge = public_path($baseDir . '/' . $item->image . '_large.jpg');
+                $imageOriginal = public_path($baseDir . '/' . $item->image . '_original.jpg');
+                $imageSmall = public_path($baseDir . '/' . $item->image . '_small.jpg');
+                $imageLarge = public_path($baseDir . '/' . $item->image . '_large.jpg');
 
-                if (file_exists($oldImageOriginal)) {
-                    unlink($oldImageOriginal);
+                if (file_exists($imageOriginal)) {
+                    unlink($imageOriginal);
                 }
-                if (file_exists($oldImageSmall)) {
-                    unlink($oldImageSmall);
+                if (file_exists($imageSmall)) {
+                    unlink($imageSmall);
                 }
-                if (file_exists($oldImageLarge)) {
-                    unlink($oldImageLarge);
+                if (file_exists($imageLarge)) {
+                    unlink($imageLarge);
                 }
 
-                $item->image = '';
+                $item->image = null;
             }
 
             $item->save();

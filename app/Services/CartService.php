@@ -12,6 +12,15 @@ class CartService {
         }
     }
 
+    private static function formatItem(Item $item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'price' => $item->price,
+            'image' => $item->cover ? $item->cover : asset('assets/images/no-image.png')
+        ];
+    }
+
     public static function add(int $id, int $quantity): void {
         self::initCart();
         $cart = Session::get('cart');
@@ -41,7 +50,7 @@ class CartService {
 
         $cartItems = [];
         foreach ($cart as $itemId => $quantity) {
-            $item = Item::find($itemId);
+            $item = self::formatItem(Item::find($itemId));
             $cartItems[] = [
                 'item' => $item,
                 'quantity' => $quantity

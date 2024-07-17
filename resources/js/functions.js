@@ -18,6 +18,20 @@ const toggleBackdrop = (show) => {
     }
 };
 
+const openOrderConfirmationModal = () => {
+    document
+        .getElementById("orderConfirmationModal")
+        .classList.remove("translate-y-full");
+    toggleBackdrop(true);
+};
+
+const closeOrderConfirmationModal = () => {
+    document
+        .getElementById("orderConfirmationModal")
+        .classList.add("translate-y-full");
+    toggleBackdrop(false);
+};
+
 const openItemModal = () => {
     document.getElementById("itemModal").classList.remove("translate-y-full");
     toggleBackdrop(true);
@@ -39,7 +53,7 @@ const closeCartModal = () => {
 };
 
 const openCheckoutModal = () => {
-    closeCartModal();
+    // closeCartModal();
     document
         .getElementById("checkoutModal")
         .classList.remove("translate-y-full");
@@ -52,6 +66,8 @@ const closeCheckoutModal = () => {
 };
 
 export {
+    openOrderConfirmationModal,
+    closeOrderConfirmationModal,
     openItemModal,
     closeItemModal,
     openCartModal,

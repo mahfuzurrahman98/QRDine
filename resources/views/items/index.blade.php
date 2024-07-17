@@ -34,11 +34,10 @@
     <main>
         <div class="flex justify-between mb-5">
             <h1 class="text-2xl font-bold text-black dark:text-gray-200">Items</h1>
-            <button data-modal-target="add-item-modal" data-modal-toggle="add-item-modal" id="add-item-modal-btn"
-                class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                type="button">
-                Add new item
-            </button>
+            <x-button type="link" name="create-item-link" id="create-item-link" size="small"
+                href="{{ route('items.create') }}" usage="create">
+                Create new item
+            </x-button>
         </div>
 
         <table class="display" style="width:100%" id="items-table">

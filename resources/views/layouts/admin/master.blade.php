@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Themesberg">
     <meta name="generator" content="Hugo 0.58.2">
-    <title>Restaurant Tableside Ordering</title>
+    <title>@yield('title') - QRDine</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="apple-touch-icon" sizes="180x180" href="">
     <meta name="theme-color" content="#ffffff">

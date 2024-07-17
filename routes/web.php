@@ -7,7 +7,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\AllergenController;
+// use App\Http\Controllers\AllergenController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\DineinTableController;
@@ -74,20 +76,34 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
         Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
 
+        // coupons
+        Route::get('/coupons', [CouponController::class, 'index'])->name('coupons');
+        Route::get('/coupons/create', [CouponController::class, 'create'])->name('coupons.create');
+        Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store');
+        Route::get('/coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
+        Route::put('/coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+        Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+
         // orders
         Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
         Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     });
 });
 
-
-
 // cart and checkout
 Route::get('/cart', [CartController::class, 'get'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/coupons/apply', [CouponController::class, 'apply'])->name('coupons.apply');
 
-Route::post('/orders', [CartController::class, 'store'])->name('orders.store');
+// store order
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::post('/orders/send', [OrderController::class, 'sendToWhatsapp'])->name('orders.send-to-whatsapp');
+
+// payment
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
